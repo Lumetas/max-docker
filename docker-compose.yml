@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  max-messenger:
+    build: .
+    container_name: max-messenger
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/tmp/.Xauthority
+      - PULSE_SERVER=unix:/tmp/pulseaudio.socket
+    volumes:
+      # X11 и аудио
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /tmp/.Xauthority:/tmp/.Xauthority:rw
+      - /tmp/pulseaudio.socket:/tmp/pulseaudio.socket:rw
+      
+      # Данные MAX (теперь правильный путь)
+      - ./data/root-config:/root/.config:rw
+
+
+      - ./MAX:/mnt/MAX_FILES:rw # Папка для с общими файлами MAX
+
+
+      # Общие папки, не раскоментировать на свой страх и риск
+
+      # - $HOME/Downloads/:/root/Downloads:rw # Папка для скачивания файлов
+      # - $HOME/Documents/:/root/Documents:rw # Папка для скачивания файлов
+      # - $HOME/Music/:/root/Music:rw # Папка для скачивания файлов
+      # - $HOME/Pictures/:/root/Pictures:rw # Папка для скачивания файлов
+      # - $HOME/Videos/:/root/Videos:rw # Папка для скачивания файлов
+
+      
+    network_mode: host
+    ipc: host
+    devices:
+      - /dev/snd:/dev/snd
+      - /dev/dri:/dev/dri
+    privileged: false
+    restart: unless-stopped
