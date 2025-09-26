@@ -27,23 +27,14 @@ RUN apt-get update && apt-get install -y \
     pulseaudio \
     && rm -rf /var/lib/apt/lists/*
 
-# Создаем пользователя без привилегий root
-RUN useradd -m -u 1000 max && \
-    mkdir -p /home/max/.config /home/max/.cache && \
-    chown -R max:max /home/max
-
 # Копируем DEB пакет
 COPY MAX.deb /tmp/MAX.deb
 
 # Устанавливаем MAX
 RUN apt update && apt install -y /tmp/MAX.deb
 
-
-# Переключаемся на непривилегированного пользователя
-# USER max
-# WORKDIR /home/max
 USER root
 WORKDIR /root
 
-# # Запускаем MAX
+# Запускаем MAX
 CMD ["MAX", "--no-sandbox"]
